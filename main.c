@@ -45,17 +45,6 @@ int main(void)
 void init()
 {
 	user = create_new_user();
-	user = create_new_user();
-	user = create_new_user();
-	user = create_new_user();
-	user = create_new_user();
-	user = create_new_user();
-	user = create_new_user();
-	user = create_new_user();
-	user = create_new_user();
-	user = create_new_user();
-	user = create_new_user();
-	user = create_new_user();
 }
 
 void print_menu()
