@@ -3,20 +3,24 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "headers/user.h"
+#include "headers/date.h"
+#include "headers/server.h"
+#include "headers/utils.h"
 
 #define BUFF_SIZE 128
-#undef DEBUGGING
 
-void print_menu();
-void program_shutdown();
-int get_input_number();
-void init();
+private void print_menu();
+private void program_shutdown();
+private void init();
+private int get_input_number();
 
 USER user;
+DATE date;
 
-int main(void)
+public int main(void)
 {
 	init();
 	bool program_running = true;
@@ -28,26 +32,30 @@ int main(void)
 		switch (get_input_number(1, 3, &buffer))
 		{
 		case 1:
-			printf("Getting openingcode...\n");
+			printf("No exposures\n");
 			break;
 		case 2:
-			printf("Getting identificationcode...\n");
+			add_verification_code(user, get_user_token());
+			// Remember to add a check for the verification code
+			date = create_new_date();
+			uint32_t token = get_identification_code(user);
+			create_new_report(token, date);
 			break;
 		case 3:
 			program_running = false;
-			(&buffer == NULL) ? exit(0) : program_shutdown(&buffer); // This check could probably be done inside the function block
+			(&buffer == NULL) ? exit(0) : program_shutdown(&buffer); // This check could probably be done inside the function 
 			break;
 		}
 	} while (program_running == true);
 	return 0;
 }
 
-void init()
+private void init()
 {
 	user = create_new_user();
 }
 
-void print_menu()
+private void print_menu()
 {
 	printf("\nMenu\n\n");
 	printf("1. Check exposures\n");
@@ -62,7 +70,7 @@ void print_menu()
 * @param buffer - Character array for fgets to save value from stdin
 * @return - Integer between 1-3 from user input
 */
-int get_input_number(int min, int max, char *buffer)
+private int get_input_number(int min, int max, char *buffer)
 {
 	int num = min;
 
@@ -71,19 +79,14 @@ int get_input_number(int min, int max, char *buffer)
 		do
 		{
 			printf("> ");
+			fflush(stdout);
 			fgets(buffer, BUFF_SIZE, stdin);
-#ifdef DEBUGGING
-			printf("%d\n", *buffer);
-#endif
 		} while (!isdigit(*buffer) || (sscanf(buffer, "%d", &num) && (num < min || num > max)));
-	} // !isdigit(*buffer) checks for characters that has the ASCII value
-#ifdef DEBUGGING
-	printf("\nUser chose: %d\n ", num);
-#endif
+	} // !isdigit(*buffer) checks for if it's a valid digit between 0-9
 	return num;
 }
 
-void program_shutdown(char *buffer)
+private void program_shutdown(char *buffer)
 {
 	printf("Goodbye.\n");
 	free(buffer);
