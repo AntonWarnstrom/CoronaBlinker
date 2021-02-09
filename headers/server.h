@@ -6,6 +6,5 @@ typedef struct report* REPORT;
 typedef struct date* DATE;
 
 REPORT create_new_report(uint32_t user_identification_code, DATE date);
-uint32_t get_user_token(void);
 
 #endif

@@ -27,7 +27,7 @@ struct date
  */
 public struct date *create_new_date()
 {
-	struct date *tmp;
+	struct date *tmp = malloc(sizeof(struct date));
 	char buffer[100];
 
 	while (true)
@@ -44,7 +44,6 @@ public struct date *create_new_date()
 			break;
 		}
 	}
-
 	return tmp;
 }
 
