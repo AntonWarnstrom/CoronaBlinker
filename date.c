@@ -10,7 +10,7 @@
 
 #define DEBUGGING
 
-private bool is_year_leap(int year);
+private bool is_leap_year(uint16_t year);
 private bool is_date_valid(uint16_t day, uint16_t month, uint16_t year);
 
 struct date
@@ -32,19 +32,40 @@ public struct date *create_new_date()
 
 	while (true)
 	{
-		uint32_t day;
-		uint32_t month;
-		uint32_t year;
+		uint16_t day;
+		uint16_t month;
+		uint16_t year;
 
 		printf("\nEnter date (dd.mm.yy): ");
 		fflush(stdout);
 		fgets(buffer, 1024, stdin);
-		if (sscanf(buffer, "%d.%d.%d", &day, &month, &year) == 3 && is_date_valid(day, month, year))
+		if (sscanf(buffer, "%hu.%hu.%hu", &day, &month, &year) == 3 && is_date_valid(day, month, year))
 		{
+			tmp->day = day;
+			tmp->month = month;
+			tmp->year = year;
 			break;
 		}
 	}
 	return tmp;
+}
+
+public bool check_date(DATE user_date, DATE external_date) 
+{
+	printf("Internal: %hu.%hu.%hu\n", user_date->day, user_date->month, user_date->year);
+	printf("External: %hu.%hu.%hu\n", external_date->day, external_date->month, external_date->year);
+	int start_month = external_date->month;
+	int total_days = (external_date->month % 2 == 0) ? (30 - external_date->day) : (31 - external_date->day);
+	for (int i = external_date->month; i < user_date->month; i++) {
+		total_days += (i % 2 == 0) ? (i == 2 && start_month != 2) ? (is_leap_year(external_date->year) ? 28 : 29) : 30 : 31;
+	}
+	int year_difference;
+	for (int i = external_date->year; i < user_date->year; i++) {
+	year_difference += is_leap_year(i) ? 364 : 365;
+		
+	}
+	printf("%d\n", total_days + user_date->month);
+	return ((total_days + (external_date->year != user_date->year) ? user_date->month : (user_date->month + year_difference)) > 21) ? false : true;
 }
 
 /**
@@ -53,7 +74,7 @@ public struct date *create_new_date()
  * @param year 
  * @return private 
  */
-private bool is_leap_year(int year)
+private bool is_leap_year(uint16_t year)
 {
     return (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
 }

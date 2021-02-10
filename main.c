@@ -31,7 +31,7 @@ public int main(void)
 		switch (get_input_number(1, 5, &buffer))
 		{
 		case 1:
-			check_infection(user);
+			print_infection(user);
 			break;
 		case 2:
 			printf("Please enter your verification code.\n");

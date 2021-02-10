@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <assert.h>
+#include <stdio.h>
 
 #include "headers/list.h"
 #include "headers/utils.h"
+#include "headers/user.h"
 
 public struct list 
 {
@@ -36,6 +38,32 @@ public void list_append(struct list* l, USER user)
 
     new_list_item->next = NULL;
     l->next = new_list_item;
+}
+
+public void list_remove_user(struct list* l, uint32_t user) 
+{
+	struct list * current;
+	struct list * previous;
+
+	current = l;
+	previous = NULL;
+	while (current != NULL) {
+		if (get_verification_code(current->user) == user) {
+			if(previous == NULL) {
+				l = current->next;
+				free(current);
+				current = l;
+			} else {
+				previous->next = current->next;
+				free(current);
+				current = l;
+			}
+		} else {
+			previous = current;
+			current = current->next;
+		}
+	}
+
 }
 
 public USER get_user_from_list(struct list* l, int pos) 

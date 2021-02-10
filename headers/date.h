@@ -5,5 +5,6 @@
 typedef struct date* DATE;
 
 DATE create_new_date();
+bool check_date(DATE user_date, DATE external_date);
 
 #endif
