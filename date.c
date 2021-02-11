@@ -59,6 +59,13 @@ public struct date *create_date(uint16_t day, uint16_t month, uint16_t year)
 		return tmp;
 }
 
+/**
+ * @brief 
+ * 
+ * @param user_date 
+ * @param external_date 
+ * @return bool 
+ */
 public bool check_date(DATE user_date, DATE external_date) 
 {
 	int year_difference;
@@ -80,7 +87,7 @@ public bool check_date(DATE user_date, DATE external_date)
  * @brief Checks if given year is valid
  * 
  * @param year 
- * @return private 
+ * @return bool 
  */
 public bool is_leap_year(uint16_t year)
 {
@@ -93,7 +100,7 @@ public bool is_leap_year(uint16_t year)
  * @param day 
  * @param month 
  * @param year 
- * @return private 
+ * @return bool 
  */
 public bool is_date_valid(uint16_t day, uint16_t month, uint16_t year) 
 {

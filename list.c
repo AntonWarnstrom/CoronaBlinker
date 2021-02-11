@@ -88,5 +88,5 @@ public int get_list_size(struct list* l)
 
 public bool list_is_empty(struct list* l) 
 {
-	return (l == NULL);
+	return (l != NULL);
 }
