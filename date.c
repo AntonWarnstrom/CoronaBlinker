@@ -10,8 +10,8 @@
 
 #define DEBUGGING
 
-private bool is_leap_year(uint16_t year);
-private bool is_date_valid(uint16_t day, uint16_t month, uint16_t year);
+public bool is_leap_year(uint16_t year);
+public bool is_date_valid(uint16_t day, uint16_t month, uint16_t year);
 
 struct date
 {
@@ -50,21 +50,29 @@ public struct date *create_new_date()
 	return tmp;
 }
 
+public struct date *create_date(uint16_t day, uint16_t month, uint16_t year)
+{
+		struct date *tmp = malloc(sizeof(struct date));
+		tmp->day = day;
+		tmp->month = month;
+		tmp->year = year;
+		return tmp;
+}
+
 public bool check_date(DATE user_date, DATE external_date) 
 {
-	printf("Internal: %hu.%hu.%hu\n", user_date->day, user_date->month, user_date->year);
-	printf("External: %hu.%hu.%hu\n", external_date->day, external_date->month, external_date->year);
+	int year_difference;
 	int start_month = external_date->month;
 	int total_days = (external_date->month % 2 == 0) ? (30 - external_date->day) : (31 - external_date->day);
-	for (int i = external_date->month; i < user_date->month; i++) {
+
+	for (int i = external_date->month; i < user_date->month; i++) 
+	{
 		total_days += (i % 2 == 0) ? (i == 2 && start_month != 2) ? (is_leap_year(external_date->year) ? 28 : 29) : 30 : 31;
 	}
-	int year_difference;
-	for (int i = external_date->year; i < user_date->year; i++) {
-	year_difference += is_leap_year(i) ? 364 : 365;
-		
+	for (int i = external_date->year; i < user_date->year; i++) 
+	{
+		year_difference += is_leap_year(i) ? 364 : 365;
 	}
-	printf("%d\n", total_days + user_date->month);
 	return ((total_days + (external_date->year != user_date->year) ? user_date->month : (user_date->month + year_difference)) > 21) ? false : true;
 }
 
@@ -74,7 +82,7 @@ public bool check_date(DATE user_date, DATE external_date)
  * @param year 
  * @return private 
  */
-private bool is_leap_year(uint16_t year)
+public bool is_leap_year(uint16_t year)
 {
     return (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
 }
@@ -87,7 +95,7 @@ private bool is_leap_year(uint16_t year)
  * @param year 
  * @return private 
  */
-private bool is_date_valid(uint16_t day, uint16_t month, uint16_t year) 
+public bool is_date_valid(uint16_t day, uint16_t month, uint16_t year) 
 {
 	if (year > 2021)
 	{
@@ -117,4 +125,16 @@ private bool is_date_valid(uint16_t day, uint16_t month, uint16_t year)
 	}
 
 	return true; 
+}
+
+public uint16_t getDay(struct date* d) {
+	return d->day;
+}
+
+public uint16_t getMonth(struct date* d) {
+	return d->month;
+}
+
+public uint16_t getYear(struct date* d) {
+	return d->year;
 }

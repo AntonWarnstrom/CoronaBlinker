@@ -14,10 +14,10 @@ public struct list
 
 public struct list* list_create() 
 {
-	struct list* list_head = (struct list*) malloc(sizeof (struct list));
-	list_head->next = NULL; 
-	list_head->user = NULL; 
-	return list_head; 
+	struct list* list = (struct list*) malloc(sizeof (struct list));
+	list->next = NULL; 
+	list->user = NULL; 
+	return list; 
 }
 
 /**
@@ -84,4 +84,9 @@ public int get_list_size(struct list* l)
     }
 
     return size;
+}
+
+public bool list_is_empty(struct list* l) 
+{
+	return (l == NULL);
 }

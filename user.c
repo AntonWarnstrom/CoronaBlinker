@@ -82,10 +82,6 @@ public void set_infection(struct user *u, bool infection_status)
 public void add_external_user_to_list(struct user* u, struct user *external_u)
 {
 	list_append(u->list, external_u);
-	printf("%d\n", u->verification_code);
-	printf("Infected: %d\n", u->infected);
-	printf("External: %d\n", external_u->verification_code);
-	printf("Infected: %d\n", external_u->infected);
 }
 
 /**
@@ -119,9 +115,11 @@ private void update_user_list(struct user *u, DATE date)
 	{
 		for (int i = 1; i <= get_list_size(u->list); i++)
 		{
-			if (check_date(get_user_from_list(u->list, i)->date, date)) {
+			if (check_date(get_user_from_list(u->list, i)->date, date)) 
+			{
 				list_remove_user(u->list, get_user_from_list(u->list, i)->verification_code);
 			}
 		}
+	print_list(u);
 	}
 }
