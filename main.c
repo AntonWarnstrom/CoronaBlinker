@@ -7,7 +7,6 @@
 
 #include "headers/user.h"
 #include "headers/date.h"
-#include "headers/server.h"
 #include "headers/utils.h"
 
 #define BUFF_SIZE 128

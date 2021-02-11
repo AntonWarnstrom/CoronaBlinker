@@ -40,15 +40,15 @@ public void list_append(struct list* l, USER user)
     l->next = new_list_item;
 }
 
-public void list_remove_user(struct list* l, uint32_t user) 
+public void list_remove_user(struct list* l, uint32_t user_code) 
 {
-	struct list * current;
-	struct list * previous;
+	struct list* current;
+	struct list* previous;
 
 	current = l;
 	previous = NULL;
 	while (current != NULL) {
-		if (get_verification_code(current->user) == user) {
+		if (get_verification_code(l->user) == user_code) { 
 			if(previous == NULL) {
 				l = current->next;
 				free(current);

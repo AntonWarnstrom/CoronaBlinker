@@ -134,14 +134,17 @@ public bool is_date_valid(uint16_t day, uint16_t month, uint16_t year)
 	return true; 
 }
 
-public uint16_t getDay(struct date* d) {
+public uint16_t getDay(struct date* d) 
+{
 	return d->day;
 }
 
-public uint16_t getMonth(struct date* d) {
+public uint16_t getMonth(struct date* d) 
+{
 	return d->month;
 }
 
-public uint16_t getYear(struct date* d) {
+public uint16_t getYear(struct date* d) 
+{
 	return d->year;
 }

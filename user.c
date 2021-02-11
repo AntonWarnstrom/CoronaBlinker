@@ -5,7 +5,6 @@
 #include <stdbool.h>
 
 #include "headers/utils.h"
-#include "headers/server.h"
 #include "headers/date.h"
 #include "headers/list.h"
 
@@ -51,9 +50,9 @@ public void add_verification_code(struct user *u, uint32_t unique_code, DATE dat
 	printf("Verification code: %d\n", u->verification_code);
 }
 
-public uint32_t get_verification_code(struct user *u) 
+public uint32_t get_verification_code(struct user* u) 
 {
-	printf("%d", u->verification_code);
+	assert(u == NULL);
 	return u->verification_code;
 }
 
