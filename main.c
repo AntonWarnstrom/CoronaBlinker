@@ -61,9 +61,8 @@ public int main(void)
 private void init()
 {
 	user = create_new_user();
-	printf("%s\n", read_file("users.txt"));
+	//printf("%s\n", read_file("users.txt"));
 	char* str = read_file("users.txt");
-	printf("%d\n", strlen(str));
 }
 
 private void print_menu()

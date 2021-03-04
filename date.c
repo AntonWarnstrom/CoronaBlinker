@@ -170,16 +170,29 @@ public void print_date(struct date* d)
 }
 
 public char* date_to_string(uint16_t day, uint16_t month, uint16_t year) {
-	char* s_day; 
-	char* s_month;
-	char* s_year;
-	
-	itoa(day, s_day, 10);
-	itoa(month, s_month, 10);
-	itoa(year, s_year, 10);
+	char* s_day = {0}; 
+	char* s_month = {0};
+	char* s_year = {0};
+	char* buffer = (char*)malloc((sizeof(day) + sizeof(month) + sizeof(year)));
 
+	if(sprintf(buffer, "%hu.%hu.%hu", day,month,year))  {
+		//printf("%d %d %d \n", day, month, year);
 
+		//printf("%s\n", buffer);
+
+		return buffer;
+	}
+}
+/*
 	char* result = concat(concat(concat(s_day, "."), concat(s_month, ".")), s_year);
 	printf("%s\n", result);
-	return result;
-}
+	if(itoa(day, s_day, 10) == NULL) {
+		printf("day converted\n");
+	}
+	if(itoa(month, s_month, 10) != NULL) {
+		printf("month converted\n");
+	}
+	if(itoa(year, s_year, 10) != NULL) {
+		printf("year converted\n");
+	}
+*/

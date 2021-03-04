@@ -75,12 +75,9 @@ public struct user *create_external_user(struct user *u, uint32_t unique_code, D
 		u->date = date;
 		char* convertedString;
 		char* s_number = concat(itoa(unique_code, convertedString, 10), "-");
-		printf("%s", s_number);
 		char* s_date = date_to_string(getDay(date), getMonth(date), getYear(date));
-		printf("%s", s_date);
 
 		char* s_result = concat(s_number, s_date);
-		printf("%s", s_result);
 		if (add_sentence_to_file("users.txt", "a", s_result)) {
 			printf("SUCCESS");
 		} else {
