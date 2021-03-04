@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <time.h>
-
+#include <math.h>
 #include "headers/date.h"
 #include "headers/utils.h"
 
@@ -27,7 +27,8 @@ struct date
  */
 public struct date *create_new_date()
 {
-	struct date *tmp = malloc(sizeof(struct date));
+	struct date *tmp = (struct date*) malloc(sizeof(struct date));
+	assert(tmp != NULL);
 	char buffer[100];
 
 	while (true)
@@ -53,34 +54,48 @@ public struct date *create_new_date()
 public struct date *create_date(uint16_t day, uint16_t month, uint16_t year)
 {
 		struct date *tmp = malloc(sizeof(struct date));
-		tmp->day = day;
-		tmp->month = month;
-		tmp->year = year;
-		return tmp;
+		assert(tmp);
+
+		if (tmp != NULL) {
+			tmp->day = day;
+			tmp->month = month;
+			tmp->year = year;
+			return tmp;
+		}
 }
 
 /**
  * @brief 
  * 
- * @param user_date 
+ * @param user_date user date will always be newer than external date (2021 > 2020)
  * @param external_date 
- * @return bool 
+ * @return returns true if total days is greater than 21
  */
-public bool check_date(DATE user_date, DATE external_date) 
-{
-	int year_difference;
-	int start_month = external_date->month;
-	int total_days = (external_date->month % 2 == 0) ? (30 - external_date->day) : (31 - external_date->day);
+public bool check_date(struct date* date_1, struct date* date_2){
+	uint16_t start_year1 = date_1->year;
+	uint16_t start_year2 = date_2->year;
+    uint16_t days1, days2;
 
-	for (int i = external_date->month; i < user_date->month; i++) 
-	{
-		total_days += (i % 2 == 0) ? (i == 2 && start_month != 2) ? (is_leap_year(external_date->year) ? 28 : 29) : 30 : 31;
-	}
-	for (int i = external_date->year; i < user_date->year; i++) 
-	{
-		year_difference += is_leap_year(i) ? 364 : 365;
-	}
-	return ((total_days + (external_date->year != user_date->year) ? user_date->month : (user_date->month + year_difference)) > 21) ? false : true;
+	struct date *date1 = malloc(sizeof(struct date));
+	date1->day = date_1->day;
+	date1->month = date_1->month;
+	date1->year = date_1->year;
+
+	struct date *date2 = malloc(sizeof(struct date));
+	date2->day = date_2->day;
+	date2->month = date_2->month;
+	date2->year = date_2->year;
+
+    date1->month = (date1->month + 9)%12;
+    date1->year = date1->year - date1->month/10;
+
+    date2->month = (date2->month + 9)%12;
+    date2->year = date2->year - date2->month/10;
+ 
+    days1 = 365*date1->year + date1->year/4 - date1->year/100 + date1->year/400 + (date1->month*306 + 5)/10 + ( date1->day - 1 );
+    days2 = 365*date2->year + date2->year/4 - date2->year/100 + date2->year/400 + (date2->month*306 + 5)/10 + ( date2->day - 1 );
+	//printf("Total days: %d \n\n", (start_year1 == start_year2) ? abs(days1 - days2) : abs(days2 - days1));
+    return (start_year1 == start_year2) ? (abs((days1 - days2)) > 21 ? true : false) : abs((days2 - days1)) > 21 ? true : false;
 }
 
 /**
@@ -121,7 +136,7 @@ public bool is_date_valid(uint16_t day, uint16_t month, uint16_t year)
 
 	if (month == 2) 
 	{
-		if (!is_leap_year(year) && day > 28 || is_leap_year(year) && day > 29) 
+		if ((!is_leap_year(year) && day > 28)  || (is_leap_year(year) && day > 29)) 
 		{
 			return false;
 		}
@@ -147,4 +162,24 @@ public uint16_t getMonth(struct date* d)
 public uint16_t getYear(struct date* d) 
 {
 	return d->year;
+}
+
+public void print_date(struct date* d) 
+{
+	printf("%hd.%hd.%hd", d->day, d->month, d->year);
+}
+
+public char* date_to_string(uint16_t day, uint16_t month, uint16_t year) {
+	char* s_day; 
+	char* s_month;
+	char* s_year;
+	
+	itoa(day, s_day, 10);
+	itoa(month, s_month, 10);
+	itoa(year, s_year, 10);
+
+
+	char* result = concat(concat(concat(s_day, "."), concat(s_month, ".")), s_year);
+	printf("%s\n", result);
+	return result;
 }

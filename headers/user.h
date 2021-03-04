@@ -7,7 +7,7 @@ typedef struct user *USER;
 typedef struct date *DATE;
 
 USER create_new_user();
-uint32_t get_identification_code(struct user *u);
+DATE get_date(struct user *u);
 uint32_t get_verification_code(struct user *u);
 struct user* create_external_user(struct user* u, uint32_t unique_code, DATE date);
 void add_verification_code(USER u, uint32_t verification_code, DATE date);

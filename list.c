@@ -6,18 +6,26 @@
 #include "headers/utils.h"
 #include "headers/user.h"
 
+public void remove_user_from_list(struct list* l, int pos);
+
 public struct list 
 {
 	struct list* next;
+	struct list* prev;
 	USER user;
 };
 
 public struct list* list_create() 
 {
 	struct list* list = (struct list*) malloc(sizeof (struct list));
-	list->next = NULL; 
-	list->user = NULL; 
-	return list; 
+	assert(list);
+
+	if (list != NULL) {
+		list->next = NULL; 
+		list->user = NULL; 
+		return list; 
+	}
+	return list;
 }
 
 /**
@@ -35,35 +43,51 @@ public void list_append(struct list* l, USER user)
     while (l->next) {
         l = l->next;
     }
-
     new_list_item->next = NULL;
     l->next = new_list_item;
 }
 
-public void list_remove_user(struct list* l, uint32_t user_code) 
+public void list_print(struct list *l)
 {
-	struct list* current;
-	struct list* previous;
-
-	current = l;
-	previous = NULL;
-	while (current != NULL) {
-		if (get_verification_code(l->user) == user_code) { 
-			if(previous == NULL) {
-				l = current->next;
-				free(current);
-				current = l;
-			} else {
-				previous->next = current->next;
-				free(current);
-				current = l;
-			}
-		} else {
-			previous = current;
-			current = current->next;
+	assert(l != NULL);
+	if (get_list_size(l) == 0)
+	{
+		printf("No phones has been detected.");
+	}
+	else
+	{
+		for (int i = 1; i <= get_list_size(l); i++)
+		{
+			printf("User: %d\n", get_verification_code(get_user_from_list(l, i)));
 		}
 	}
+}
 
+public void remove_user_from_list(struct list* l, int pos) 
+{
+	int i=1;
+	struct list* temp;
+	struct list* iter;
+ 
+	if(l != NULL)
+	{
+		iter = l;
+		if(pos == 1)
+		{
+			l = l->next;
+			iter->next = NULL;
+			free(iter);
+		}else 
+		{
+			while(i++ != pos) {
+				iter = iter->next;
+			}
+			temp = iter->next;
+			iter->next = temp->next;
+			temp->next = NULL;
+			free(temp);
+		}
+	}
 }
 
 public USER get_user_from_list(struct list* l, int pos) 

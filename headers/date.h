@@ -13,4 +13,6 @@ bool is_leap_year(uint16_t year);
 uint16_t getDay(struct date* d);
 uint16_t getMonth(struct date* d);
 uint16_t getYear(struct date* d);
+void print_date(struct date* d);
+char* date_to_string(uint16_t day, uint16_t month, uint16_t year);
 #endif

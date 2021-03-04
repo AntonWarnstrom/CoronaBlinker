@@ -8,6 +8,7 @@
 #include "headers/user.h"
 #include "headers/date.h"
 #include "headers/utils.h"
+#include "headers/file.h"
 
 #define BUFF_SIZE 128
 #undef DEBUGGING
@@ -50,7 +51,7 @@ public int main(void)
 			break;
 		case 5:
 			program_running = false;
-			(&buffer == NULL) ? exit(0) : program_shutdown(&buffer); // This check could probably be done inside the function 
+			(buffer == NULL) ? exit(0) : program_shutdown(&buffer); // This check could probably be done inside the function 
 			break;
 		}
 	} while (program_running == true);
@@ -60,11 +61,14 @@ public int main(void)
 private void init()
 {
 	user = create_new_user();
+	printf("%s\n", read_file("users.txt"));
+	char* str = read_file("users.txt");
+	printf("%d\n", strlen(str));
 }
 
 private void print_menu()
 {
-	printf("\nMenu\n\n");
+	printf("\nMenu\n");
 	printf("1. Check exposures\n");
 	printf("2. Report your infection\n");
 	printf("3. Enter external phone\n");

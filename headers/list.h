@@ -7,11 +7,12 @@ typedef struct list *LIST;
 typedef struct user *USER;
 typedef struct date *DATE;
 
-struct list* list_create();
 bool list_is_empty(struct list* l);
-void list_append(struct list* l, USER user);
-void list_remove_user(struct list* l, uint32_t user);
-int get_list_size(struct list* l);
 USER get_user_from_list(struct list* l, int pos);
+struct list* list_create();
+void remove_user_from_list(struct list* l, int pos);
+void list_append(struct list* l, USER user);
+void list_print(struct list* l);
+int get_list_size(struct list* l);
 
 #endif
