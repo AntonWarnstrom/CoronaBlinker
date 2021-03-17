@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <math.h>
+
 #include "headers/date.h"
 #include "headers/utils.h"
 
@@ -60,8 +61,9 @@ public struct date *create_date(uint16_t day, uint16_t month, uint16_t year)
 			tmp->day = day;
 			tmp->month = month;
 			tmp->year = year;
-			return tmp;
+			//printf("%hu %hu %hu ", tmp->day, tmp->month, tmp->year);
 		}
+	return tmp;
 }
 
 /**
@@ -75,7 +77,7 @@ public bool check_date(struct date* date_1, struct date* date_2){
 	uint16_t start_year1 = date_1->year;
 	uint16_t start_year2 = date_2->year;
     uint16_t days1, days2;
-
+	//printf("Date1> %hu.%hu.%hu \nDate2> %hu.%hu.%hu", getDay(date_1), getMonth(date_1), getYear(date_1), getDay(date_2), getMonth(date_2), getYear(date_2));
 	struct date *date1 = malloc(sizeof(struct date));
 	date1->day = date_1->day;
 	date1->month = date_1->month;
@@ -94,9 +96,37 @@ public bool check_date(struct date* date_1, struct date* date_2){
  
     days1 = 365*date1->year + date1->year/4 - date1->year/100 + date1->year/400 + (date1->month*306 + 5)/10 + ( date1->day - 1 );
     days2 = 365*date2->year + date2->year/4 - date2->year/100 + date2->year/400 + (date2->month*306 + 5)/10 + ( date2->day - 1 );
-	//printf("Total days: %d \n\n", (start_year1 == start_year2) ? abs(days1 - days2) : abs(days2 - days1));
+	//printf("\nTotal days: %d \n\n", (start_year1 == start_year2) ? abs(days1 - days2) : abs(days2 - days1));
     return (start_year1 == start_year2) ? (abs((days1 - days2)) > 21 ? true : false) : abs((days2 - days1)) > 21 ? true : false;
 }
+
+public bool get_number_of_days(struct date* date_1, struct date* date_2) {
+	uint16_t start_year1 = date_1->year;
+	uint16_t start_year2 = date_2->year;
+    uint16_t days1, days2;
+	printf("\nDate1> %hu.%hu.%hu \nDate2> %hu.%hu.%hu", getDay(date_1), getMonth(date_1), getYear(date_1), getDay(date_2), getMonth(date_2), getYear(date_2));
+	struct date *date1 = malloc(sizeof(struct date));
+	date1->day = date_1->day;
+	date1->month = date_1->month;
+	date1->year = date_1->year;
+
+	struct date *date2 = malloc(sizeof(struct date));
+	date2->day = date_2->day;
+	date2->month = date_2->month;
+	date2->year = date_2->year;
+
+    date1->month = (date1->month + 9)%12;
+    date1->year = date1->year - date1->month/10;
+
+    date2->month = (date2->month + 9)%12;
+    date2->year = date2->year - date2->month/10;
+ 
+    days1 = 365*date1->year + date1->year/4 - date1->year/100 + date1->year/400 + (date1->month*306 + 5)/10 + ( date1->day - 1 );
+    days2 = 365*date2->year + date2->year/4 - date2->year/100 + date2->year/400 + (date2->month*306 + 5)/10 + ( date2->day - 1 );
+	printf("Total days: %d \n", (start_year1 == start_year2) ? days1 - days2 : days2 - days1);
+    return (days1 - days2 < 0 || days1 - days2 == 0) ? false : true;
+} // Return true if date1 is 'older' than date2
+
 
 /**
  * @brief Checks if given year is valid
@@ -170,10 +200,7 @@ public void print_date(struct date* d)
 }
 
 public char* date_to_string(uint16_t day, uint16_t month, uint16_t year) {
-	char* s_day = {0}; 
-	char* s_month = {0};
-	char* s_year = {0};
-	char* buffer = (char*)malloc((sizeof(day) + sizeof(month) + sizeof(year)));
+	char* buffer = (char*)malloc((sizeof(day) + sizeof(month) + sizeof(year)+1));
 
 	if(sprintf(buffer, "%hu.%hu.%hu", day,month,year))  {
 		//printf("%d %d %d \n", day, month, year);
@@ -182,17 +209,5 @@ public char* date_to_string(uint16_t day, uint16_t month, uint16_t year) {
 
 		return buffer;
 	}
+	return buffer;
 }
-/*
-	char* result = concat(concat(concat(s_day, "."), concat(s_month, ".")), s_year);
-	printf("%s\n", result);
-	if(itoa(day, s_day, 10) == NULL) {
-		printf("day converted\n");
-	}
-	if(itoa(month, s_month, 10) != NULL) {
-		printf("month converted\n");
-	}
-	if(itoa(year, s_year, 10) != NULL) {
-		printf("year converted\n");
-	}
-*/

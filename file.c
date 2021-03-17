@@ -10,6 +10,8 @@
 #include "headers/list.h"
 #include "headers/user.h"
 
+char* read_file(const char* path);
+
 /**
  * @brief 
  *
@@ -27,21 +29,23 @@ public bool check_if_file_exists(const char *path, const char *mode)
 	}
 	else
 	{
+		fclose(file);
 		return false;
 	}
 }
 
 public bool add_sentence_to_file(const char* path, const char* mode, const char* str) {
-	
+	char* string = concat(str, "\n");
 	FILE * file;
     file = fopen(path, mode);
-	if (fputs(concat(str, "\n"), file) == 0) {
+	if (fwrite(string, sizeof(char), strlen(string), file) == 0) {
 		fclose(file);
-		return true;
-	} else {
 		return false;
+	} else {
+		fclose(file);
+		//printf("%s", read_file(path));
+		return true;
 	}
-	
 }
 
 public char* read_file(const char* path) {
@@ -66,35 +70,15 @@ public char* read_file(const char* path) {
 	return buffer;
 }
 
-public void print_file(const char* path) {
+public void write_data_from_file_to_list(const char* path) {
  	char* buffer = 0;
-    long length;
+	int i;
     FILE * f = fopen(path, "rb");
-
-    if (f)
-    {
-      fseek(f, 0, SEEK_END);
-      length = ftell(f);
-      fseek(f, 0, SEEK_SET);
-      buffer = (char*)malloc((length+1)*sizeof(char));
-      if (buffer)
-      {
-        fread(buffer, sizeof(char), length, f);
-      }
-      fclose(f);
+	buffer = (char*)malloc ((ftell(f)+1)*sizeof(char));
+    i = 1;
+    while (fgets(buffer, 80, f) != NULL){
+		read_data_from_string(buffer);
+        i++;
     }
-    buffer[length] = '\0';
-	for (int i = 0; i < length; i++) {
-		//if(buffer[i] == '\0' || buffer[i] == '\n') { i+=2;}
-    	//printf("buffer[%d] == %c\n", i, buffer[i]);
-    }
-	
-   	//printf("%s\n", buffer);
-
-    free(buffer);
-    fclose(f);
-}
-
-public int create_date_from_file(char* buffer) {
-
+    fseek(f, 10, SEEK_SET);
 }

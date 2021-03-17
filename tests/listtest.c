@@ -34,13 +34,5 @@ int main() {
 	//printf("%d\n", get_verification_code(get_user_from_list(test_list, get_list_size(test_list))));
 
 	list_print(test_list);
-
-	test_list = list_remove_user(test_list, get_verification_code(get_user_from_list(test_list, get_list_size(test_list))));
-
-	list_print(test_list);
-
-	test_list = list_remove_user(test_list, get_verification_code(get_user_from_list(test_list, get_list_size(test_list)-2)));
-
-	list_print(test_list);
 	
 }

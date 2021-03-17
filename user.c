@@ -2,14 +2,16 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdint.h>
+#include <string.h>
 #include <stdbool.h>
 
 #include "headers/utils.h"
 #include "headers/date.h"
 #include "headers/list.h"
 #include "headers/file.h"
+#include "headers/main.h"
 
-private void update_user_list(struct user *u, DATE date);
+private void update_user_list(struct user *u, DATE_T date);
 public uint32_t get_verification_code(struct user* u); 
 /**
  * @brief User struct 
@@ -19,7 +21,7 @@ public struct user
 {
 	bool infected;
 	uint32_t verification_code;
-	DATE date;
+	DATE_T date;
 	LIST list;
 };
 
@@ -51,11 +53,19 @@ public struct user *create_new_user()
  * @param unique_code 
  * @return public 
  */
-public void add_verification_code(struct user *u, uint32_t unique_code, DATE date)
+public void add_verification_code(struct user *u, uint32_t unique_code)
 {
 	u->verification_code = unique_code;
-	u->date = date;
 	u->infected = true;
+}
+
+public void add_date(struct user *u, DATE_T date) 
+{
+	u->date = date;
+}
+
+public void update_list(struct user* u) 
+{
 	update_user_list(u, u->date);
 }
 
@@ -64,12 +74,12 @@ public uint32_t get_verification_code(struct user *u)
 	return u->verification_code;
 }
 
-public struct user *create_external_user(struct user *u, uint32_t unique_code, DATE date)
+public struct user *add_external_user_to_file(struct user *u, uint32_t unique_code, DATE_T date)
 {
 	assert(u);
 	assert(date);
 
-	if (date != NULL && u != NULL && check_if_file_exists("users.txt", "r")) {
+	if (date != NULL && u != NULL && check_if_file_exists("users.bin", "rb")) {
 
 		u->verification_code = unique_code;
 		u->date = date;
@@ -78,18 +88,32 @@ public struct user *create_external_user(struct user *u, uint32_t unique_code, D
 		char* s_date = date_to_string(getDay(date), getMonth(date), getYear(date));
 
 		char* s_result = concat(s_number, s_date);
-		if (add_sentence_to_file("users.txt", "a", s_result)) {
-			printf("SUCCESS");
+		if (add_sentence_to_file("users.bin", "ab", s_result)) {
+			//printf("SUCCESS");
 		} else {
-			printf("FAIL");
+			//printf("FAIL");
 		}
 		return u;
 	}
 	return u;
 }
 
-public DATE get_date(struct user *u) {
+public struct user *create_external_user(struct user *u, uint32_t unique_code, DATE_T date) {
+		u->verification_code = unique_code;
+		u->date = date;
+		return u;
+}
+
+public USER get_user(){
+	return return_user();
+}
+
+public DATE_T get_date(struct user *u) {
 	return u->date;
+}
+
+public LIST get_list(struct user *u) {
+	return u->list;
 }
 
 public void print_infection(struct user *u)
@@ -110,9 +134,13 @@ public void set_infection(struct user *u, bool infection_status)
 	u->infected = infection_status;
 }
 
-public void add_external_user_to_list(struct user* u, struct user *external_u)
+public void add_external_user_to_list(struct user* u, struct user *external_u, char* str)
 {
 	assert(u != NULL);
+	assert(external_u != NULL);
+	if (strcmp(str, "file") == 0) {
+		add_external_user_to_file(external_u, external_u->verification_code, external_u->date);
+	}
 	list_append(u->list, external_u);
 }
 
@@ -133,13 +161,17 @@ public void print_list(struct user *u)
 	{
 		for (int i = 1; i <= get_list_size(u->list); i++)
 		{
-			printf("User: %d - %d.%d.%d\n", get_user_from_list(u->list, i)->verification_code, getDay(get_user_from_list(u->list, i)->date), getMonth(get_user_from_list(u->list, i)->date), getYear(get_user_from_list(u->list, i)->date));
-			
+			printf("#%d User: %d - %hu.%hu.%hu\n", i, get_user_from_list(u->list, i)->verification_code, getDay(get_user_from_list(u->list, i)->date), getMonth(get_user_from_list(u->list, i)->date), getYear(get_user_from_list(u->list, i)->date));
 		}
 	}
 }
 
-private void update_user_list(struct user* u, DATE date)
+public bool check_user_for_infection(USER user, int pos) 
+{
+	return check_date(get_date(user), get_date(get_user_from_list(user->list, pos)));
+}
+
+private void update_user_list(struct user* u, DATE_T date)
 {
 	assert(u != NULL);
 	if (get_list_size(u->list) == 0)
@@ -148,15 +180,15 @@ private void update_user_list(struct user* u, DATE date)
 	}
 	else
 	{
+		//printf("%d\n", get_list_size(u->list));
 		for (int i = 1; i <= get_list_size(u->list); i++)
 		{
-			//printf("Run: %d\n", i);
 			if (check_date(date, get_user_from_list(u->list, i)->date)) 
 			{
-				//printf("User to be remove: %d\n", get_user_from_list(u->list, i)->verification_code);
-				remove_user_from_list(u->list, i);
+			//printf("Run: %d User to be remove: %d - %hu.%hu.%hu\n\n", i, get_user_from_list(u->list, i)->verification_code, getDay(get_user_from_list(u->list, i)->date), getMonth(get_user_from_list(u->list, i)->date), getYear(get_user_from_list(u->list, i)->date));
+			remove_user_from_list(u->list, i);
 			}
 		}
-	list_print(u->list);
+	//list_print(u->list);
 	}
 }

@@ -5,13 +5,14 @@
 #include "headers/list.h"
 #include "headers/utils.h"
 #include "headers/user.h"
+#include "headers/date.h"
 
 public void remove_user_from_list(struct list* l, int pos);
+void insert_at_position(struct list*l, USER user, int pos);
 
 public struct list 
 {
 	struct list* next;
-	struct list* prev;
 	USER user;
 };
 
@@ -28,13 +29,6 @@ public struct list* list_create()
 	return list;
 }
 
-/**
- * @brief Adds an external user to a list
- * 
- * @param l 
- * @param user 
- * @return public 
- */
 public void list_append(struct list* l, USER user) 
 {
     struct list* new_list_item = (struct list*) malloc(sizeof (struct list));
@@ -45,6 +39,52 @@ public void list_append(struct list* l, USER user)
     }
     new_list_item->next = NULL;
     l->next = new_list_item;
+}
+
+/**
+ * @brief Adds an external user to a list
+ * 
+ * @param l 
+ * @param user 
+ * @return public 
+ */
+public void list_append_test(struct list* l, USER user) 
+{
+    struct list* new_list_item = (struct list*) malloc(sizeof (struct list));
+	new_list_item->user = user;
+	if (get_list_size(l) == 0) {
+		while (l->next) {
+        	l = l->next;
+    	}
+		new_list_item->next = NULL;
+		l->next = new_list_item;
+		printf("tstege");
+	} else {
+		for (int i = 1; i <= get_list_size(l);) {
+			list_print(l);
+			printf("%d-%d: %d:", i, get_verification_code(user), get_verification_code(get_user_from_list(l, i)));
+			if (!get_number_of_days(get_date(user),  get_date(get_user_from_list(l, i)))) {
+				printf("Older\n");
+				i++;
+			} else {
+				insert_at_position(l , user, i);
+				printf("Newer\n");
+				i++;
+			}
+		}
+	}
+}
+
+public void insert_at_position(struct list*l, USER user, int pos) {
+    struct list* new_list_item = (struct list*) malloc(sizeof (struct list));
+	new_list_item->user = user;
+
+	while(pos--) {
+		l = l->next;
+	}
+	new_list_item->next = l->next;
+	l->next = new_list_item;
+
 }
 
 public void list_print(struct list *l)
@@ -58,7 +98,7 @@ public void list_print(struct list *l)
 	{
 		for (int i = 1; i <= get_list_size(l); i++)
 		{
-			printf("User: %d\n", get_verification_code(get_user_from_list(l, i)));
+			printf("#%d User: %d - %hu.%hu.%hu\n", i, get_verification_code(get_user_from_list(l, i)), getDay(get_date(get_user_from_list(l, i))), getMonth(get_date(get_user_from_list(l, i))), getYear(get_date(get_user_from_list(l, i))));
 		}
 	}
 }
@@ -68,7 +108,7 @@ public void remove_user_from_list(struct list* l, int pos)
 	int i=1;
 	struct list* temp;
 	struct list* iter;
- 
+	//printf("Position: %d\n", pos);
 	if(l != NULL)
 	{
 		iter = l;

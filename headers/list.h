@@ -5,7 +5,7 @@
 
 typedef struct list *LIST;
 typedef struct user *USER;
-typedef struct date *DATE;
+typedef struct date *DATE_T;
 
 bool list_is_empty(struct list* l);
 USER get_user_from_list(struct list* l, int pos);
