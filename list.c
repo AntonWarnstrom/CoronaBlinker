@@ -29,7 +29,7 @@ public struct list* list_create()
 	return list;
 }
 
-public void list_append(struct list* l, USER user) 
+public void list_append_test(struct list* l, USER user) 
 {
     struct list* new_list_item = (struct list*) malloc(sizeof (struct list));
 	new_list_item->user = user;
@@ -48,30 +48,19 @@ public void list_append(struct list* l, USER user)
  * @param user 
  * @return public 
  */
-public void list_append_test(struct list* l, USER user) 
+public void list_append(struct list* l, USER user) 
 {
     struct list* new_list_item = (struct list*) malloc(sizeof (struct list));
 	new_list_item->user = user;
 	if (get_list_size(l) == 0) {
-		while (l->next) {
-        	l = l->next;
-    	}
 		new_list_item->next = NULL;
 		l->next = new_list_item;
-		printf("tstege");
 	} else {
-		for (int i = 1; i <= get_list_size(l);) {
-			list_print(l);
-			printf("%d-%d: %d:", i, get_verification_code(user), get_verification_code(get_user_from_list(l, i)));
-			if (!get_number_of_days(get_date(user),  get_date(get_user_from_list(l, i)))) {
-				printf("Older\n");
-				i++;
-			} else {
-				insert_at_position(l , user, i);
-				printf("Newer\n");
-				i++;
-			}
+		int i = 1;
+		while(!get_number_of_days(get_date(user),  get_date(get_user_from_list(l, i)))) {
+			i++;
 		}
+		insert_at_position(l , user, i);
 	}
 }
 
@@ -79,7 +68,7 @@ public void insert_at_position(struct list*l, USER user, int pos) {
     struct list* new_list_item = (struct list*) malloc(sizeof (struct list));
 	new_list_item->user = user;
 
-	while(pos--) {
+	while(--pos) {
 		l = l->next;
 	}
 	new_list_item->next = l->next;
